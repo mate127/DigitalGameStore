@@ -38,17 +38,21 @@
             @Html.DisplayNameFor(model => model.Genre)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Genre.GenreId)
+            @Html.DisplayFor(model => model.Genre.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Publisher)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Publisher)
+            @Html.DisplayFor(model => model.Publisher.Username)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.GameId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <form asp-action="Edit" asp-route-id="@Model?.GameId" method="get" style="display:inline;">
+        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+    </form>
+    <form asp-action="Index" method="get" style="display:inline;">
+        <button type="submit" class="btn btn-light btn-sm">Back to List</button>
+    </form>
 </div>

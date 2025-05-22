@@ -27,7 +27,9 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="CatalogueId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Delete" class="btn btn-danger" />
+    </form>
+    <form asp-action="Index" method="get" style="display:inline;">
+        <button type="submit" class="btn btn-light btn-sm">Back to List</button>
     </form>
 </div>

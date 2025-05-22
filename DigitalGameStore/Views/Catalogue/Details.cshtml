@@ -27,16 +27,17 @@
     @if (Model.Games != null && Model.Games.Any())
     {
         <h5>Items in this Catalogue:</h5>
-        <ul>
-            @foreach (var item in Model.Games)
-            {
-                <li>@item.Name</li>
-                <li>@item.PublicationDate</li>
-                <li>@item.Price</li>
-                <li>@item.Genre</li>
-                <li>@item.Publisher</li>
-            }
-        </ul>
+
+        @foreach (var item in Model.Games)
+        {
+            <div class="mb-4 p-3 border rounded bg-light">
+                <p><strong>Name:</strong> @item.Name</p>
+                <p><strong>Publication Date:</strong> @item.PublicationDate.ToShortDateString()</p>
+                <p><strong>Price:</strong> @item.Price eur</p>
+                <p><strong>Genre:</strong> @item.Genre</p>
+                <p><strong>Publisher:</strong> @item.Publisher.Username</p>
+            </div>
+        }
     }
     else
     {
@@ -44,6 +45,10 @@
     }
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.CatalogueId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <form asp-action="Edit" asp-route-id="@Model?.CatalogueId" method="get" style="display:inline;">
+        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+    </form>
+    <form asp-action="Index" method="get" style="display:inline;">
+        <button type="submit" class="btn btn-light btn-sm">Back to List</button>
+    </form>
 </div>

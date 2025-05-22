@@ -36,8 +36,10 @@ namespace DigitalGameStore.Controllers
             }
 
             var catalogue = await _context.Catalogues
-                .Include(x => x.Games)
-                .FirstOrDefaultAsync(m => m.CatalogueId == id);
+                .Include(c => c.Games)
+                    .ThenInclude(g => g.Publisher)
+                .FirstOrDefaultAsync(c => c.CatalogueId == id);
+
             if (catalogue == null)
             {
                 return NotFound();
