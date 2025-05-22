@@ -38,6 +38,8 @@ namespace DigitalGameStore.Controllers
             var catalogue = await _context.Catalogues
                 .Include(c => c.Games)
                     .ThenInclude(g => g.Publisher)
+                .Include(g => g.Games)
+                    .ThenInclude(g => g.Genre)
                 .FirstOrDefaultAsync(c => c.CatalogueId == id);
 
             if (catalogue == null)

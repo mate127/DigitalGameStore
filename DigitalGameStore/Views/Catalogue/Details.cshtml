@@ -34,8 +34,15 @@
                 <p><strong>Name:</strong> @item.Name</p>
                 <p><strong>Publication Date:</strong> @item.PublicationDate.ToShortDateString()</p>
                 <p><strong>Price:</strong> @item.Price eur</p>
-                <p><strong>Genre:</strong> @item.Genre</p>
+                <p><strong>Genre:</strong> @item.Genre.Name</p>
                 <p><strong>Publisher:</strong> @item.Publisher.Username</p>
+
+                <a asp-controller="Game" asp-action="Edit" asp-route-id="@item.GameId" class="btn btn-warning btn-sm mt-2">
+                    Edit
+                </a>
+                <a asp-controller="Game" asp-action="Delete" asp-route-id="@item.GameId" class="btn btn-danger btn-sm mt-2">
+                    Delete
+                </a>
             </div>
         }
     }
