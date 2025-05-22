@@ -50,14 +50,8 @@ namespace DigitalGameStore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameId"));
 
-                    b.Property<int?>("AdminUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("GameGenreGenreId")
-                        .HasColumnType("int");
 
                     b.Property<int>("GenreId")
                         .HasColumnType("int");
@@ -76,10 +70,6 @@ namespace DigitalGameStore.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("GameId");
-
-                    b.HasIndex("AdminUserId");
-
-                    b.HasIndex("GameGenreGenreId");
 
                     b.HasIndex("GenreId");
 
@@ -172,10 +162,13 @@ namespace DigitalGameStore.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("UserId");
 
@@ -186,7 +179,7 @@ namespace DigitalGameStore.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("GameCatalogue", b =>
+            modelBuilder.Entity("GameCatalogues", b =>
                 {
                     b.Property<int>("CatalogueId")
                         .HasColumnType("int");
@@ -198,7 +191,7 @@ namespace DigitalGameStore.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("GameCatalogue");
+                    b.ToTable("GameCatalogues");
                 });
 
             modelBuilder.Entity("DigitalGameStore.Models.Admin", b =>
@@ -213,22 +206,14 @@ namespace DigitalGameStore.Migrations
 
             modelBuilder.Entity("DigitalGameStore.Models.Game", b =>
                 {
-                    b.HasOne("DigitalGameStore.Models.Admin", null)
-                        .WithMany("CreatedGames")
-                        .HasForeignKey("AdminUserId");
-
-                    b.HasOne("DigitalGameStore.Models.GameGenre", null)
-                        .WithMany("Games")
-                        .HasForeignKey("GameGenreGenreId");
-
                     b.HasOne("DigitalGameStore.Models.GameGenre", "Genre")
-                        .WithMany()
+                        .WithMany("Games")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("DigitalGameStore.Models.Admin", "Publisher")
-                        .WithMany()
+                        .WithMany("CreatedGames")
                         .HasForeignKey("PublisherId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -276,7 +261,7 @@ namespace DigitalGameStore.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GameCatalogue", b =>
+            modelBuilder.Entity("GameCatalogues", b =>
                 {
                     b.HasOne("DigitalGameStore.Models.Catalogue", null)
                         .WithMany()

@@ -21,6 +21,9 @@ namespace DigitalGameStore.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Admin>().ToTable("Admins");
+            modelBuilder.Entity<User>().ToTable("Users");
+
             // Game - Genre (many-to-one)
             modelBuilder.Entity<Game>()
                 .HasOne(g => g.Genre)
@@ -72,7 +75,7 @@ namespace DigitalGameStore.Data
             .HasMany(s => s.Catalogues)
             .WithMany(c => c.Games)
             .UsingEntity<Dictionary<string, object>>(
-                "GameCatalogue", // name of existing table
+                "GameCatalogues", // name of existing table
                 j => j.HasOne<Catalogue>().WithMany().HasForeignKey("CatalogueId"),
                 j => j.HasOne<Game>().WithMany().HasForeignKey("GameId"));
         }

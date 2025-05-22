@@ -1,8 +1,12 @@
-﻿namespace DigitalGameStore.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DigitalGameStore.Models
 {
     public class Licence
     {
         //public int LicenceId { get; set; }
+
+        [Required]
         public required string Name { get; set; }
         public string? Description { get; set; }
 

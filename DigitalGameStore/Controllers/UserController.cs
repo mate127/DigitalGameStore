@@ -153,5 +153,15 @@ namespace DigitalGameStore.Controllers
         {
             return _context.Users.Any(e => e.UserId == id);
         }
+
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult CheckEmail(string email)
+        {
+            if (_context.Users.Any(u => u.Email == email))
+            {
+                return Json($"Email {email} je već registriran.");
+            }
+            return Json(true);
+        }
     }
 }
