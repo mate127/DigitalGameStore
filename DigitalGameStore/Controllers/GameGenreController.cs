@@ -34,7 +34,7 @@ namespace DigitalGameStore.Controllers
             }
 
             var gameGenre = await _context.GameGenres
-                .FirstOrDefaultAsync(m => m.GameGenreId == id);
+                .FirstOrDefaultAsync(m => m.GenreId == id);
             if (gameGenre == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace DigitalGameStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GameGenreId,Name")] GameGenre gameGenre)
+        public async Task<IActionResult> Create([Bind("GenreId,Name")] GameGenre gameGenre)
         {
             if (ModelState.IsValid)
             {
@@ -86,9 +86,9 @@ namespace DigitalGameStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GameGenreId,Name")] GameGenre gameGenre)
+        public async Task<IActionResult> Edit(int id, [Bind("GenreId,Name")] GameGenre gameGenre)
         {
-            if (id != gameGenre.GameGenreId)
+            if (id != gameGenre.GenreId)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace DigitalGameStore.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GameGenreExists(gameGenre.GameGenreId))
+                    if (!GameGenreExists(gameGenre.GenreId))
                     {
                         return NotFound();
                     }
@@ -125,7 +125,7 @@ namespace DigitalGameStore.Controllers
             }
 
             var gameGenre = await _context.GameGenres
-                .FirstOrDefaultAsync(m => m.GameGenreId == id);
+                .FirstOrDefaultAsync(m => m.GenreId == id);
             if (gameGenre == null)
             {
                 return NotFound();
@@ -151,7 +151,7 @@ namespace DigitalGameStore.Controllers
 
         private bool GameGenreExists(int id)
         {
-            return _context.GameGenres.Any(e => e.GameGenreId == id);
+            return _context.GameGenres.Any(e => e.GenreId == id);
         }
     }
 }

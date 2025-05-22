@@ -30,15 +30,16 @@
             @Html.DisplayFor(model => model.User)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GameId)
+            @Html.DisplayNameFor(model => model.Game)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GameId)
+            @Html.DisplayFor(model => model.Game.GameId)
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="LicenceId" />
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="GameId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

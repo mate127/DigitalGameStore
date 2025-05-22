@@ -17,9 +17,10 @@ namespace DigitalGameStore.Models
         public int PublisherId { get; set; }
         public Admin? Publisher { get; set; }
 
-        public int LicenceId { get; set; }
-        public Licence? Licence { get; set; }
+        public ICollection<Licence>? Licences { get; set; }
 
         public ICollection<Review>? Reviews { get; set; }
+
+        public ICollection<Catalogue>? Catalogues { get; set; }
     }
 }

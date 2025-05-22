@@ -22,7 +22,7 @@ namespace DigitalGameStore.Controllers
         // GET: Game
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Games.Include(g => g.Genre).Include(g => g.Licence).Include(g => g.Publisher);
+            var appDbContext = _context.Games.Include(g => g.Genre).Include(g => g.Publisher);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -36,7 +36,6 @@ namespace DigitalGameStore.Controllers
 
             var game = await _context.Games
                 .Include(g => g.Genre)
-                .Include(g => g.Licence)
                 .Include(g => g.Publisher)
                 .FirstOrDefaultAsync(m => m.GameId == id);
             if (game == null)
@@ -51,7 +50,6 @@ namespace DigitalGameStore.Controllers
         public IActionResult Create()
         {
             ViewData["GenreId"] = new SelectList(_context.GameGenres, "GameGenreId", "GameGenreId");
-            ViewData["LicenceId"] = new SelectList(_context.Licences, "LicenceId", "LicenceId");
             ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Discriminator");
             return View();
         }
@@ -61,7 +59,7 @@ namespace DigitalGameStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GameId,Name,Description,PublicationDate,Price,GenreId,PublisherId,LicenceId")] Game game)
+        public async Task<IActionResult> Create([Bind("GameId,Name,Description,PublicationDate,Price,GenreId,PublisherId")] Game game)
         {
             if (ModelState.IsValid)
             {
@@ -70,7 +68,6 @@ namespace DigitalGameStore.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GenreId"] = new SelectList(_context.GameGenres, "GameGenreId", "GameGenreId", game.GenreId);
-            ViewData["LicenceId"] = new SelectList(_context.Licences, "LicenceId", "LicenceId", game.LicenceId);
             ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Discriminator", game.PublisherId);
             return View(game);
         }
@@ -89,7 +86,6 @@ namespace DigitalGameStore.Controllers
                 return NotFound();
             }
             ViewData["GenreId"] = new SelectList(_context.GameGenres, "GameGenreId", "GameGenreId", game.GenreId);
-            ViewData["LicenceId"] = new SelectList(_context.Licences, "LicenceId", "LicenceId", game.LicenceId);
             ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Discriminator", game.PublisherId);
             return View(game);
         }
@@ -99,7 +95,7 @@ namespace DigitalGameStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GameId,Name,Description,PublicationDate,Price,GenreId,PublisherId,LicenceId")] Game game)
+        public async Task<IActionResult> Edit(int id, [Bind("GameId,Name,Description,PublicationDate,Price,GenreId,PublisherId")] Game game)
         {
             if (id != game.GameId)
             {
@@ -127,7 +123,6 @@ namespace DigitalGameStore.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GenreId"] = new SelectList(_context.GameGenres, "GameGenreId", "GameGenreId", game.GenreId);
-            ViewData["LicenceId"] = new SelectList(_context.Licences, "LicenceId", "LicenceId", game.LicenceId);
             ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Discriminator", game.PublisherId);
             return View(game);
         }
@@ -142,7 +137,6 @@ namespace DigitalGameStore.Controllers
 
             var game = await _context.Games
                 .Include(g => g.Genre)
-                .Include(g => g.Licence)
                 .Include(g => g.Publisher)
                 .FirstOrDefaultAsync(m => m.GameId == id);
             if (game == null)

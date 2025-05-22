@@ -22,7 +22,9 @@ namespace DigitalGameStore.Controllers
         // GET: Catalogue
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Catalogues.ToListAsync());
+            return View(await _context.Catalogues
+                //.Include(x => x.Games)
+                .ToListAsync());
         }
 
         // GET: Catalogue/Details/5
@@ -34,6 +36,7 @@ namespace DigitalGameStore.Controllers
             }
 
             var catalogue = await _context.Catalogues
+                .Include(x => x.Games)
                 .FirstOrDefaultAsync(m => m.CatalogueId == id);
             if (catalogue == null)
             {

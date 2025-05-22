@@ -19,14 +19,14 @@ namespace DigitalGameStore.Controllers
             _context = context;
         }
 
-        // GET: Licences
+        // GET: Licence
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Licences.Include(l => l.User);
+            var appDbContext = _context.Licences.Include(l => l.Game).Include(l => l.User);
             return View(await appDbContext.ToListAsync());
         }
 
-        // GET: Licences/Details/5
+        // GET: Licence/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,8 +35,9 @@ namespace DigitalGameStore.Controllers
             }
 
             var licence = await _context.Licences
+                .Include(l => l.Game)
                 .Include(l => l.User)
-                .FirstOrDefaultAsync(m => m.LicenceId == id);
+                .FirstOrDefaultAsync(m => m.UserId == id);
             if (licence == null)
             {
                 return NotFound();
@@ -45,19 +46,20 @@ namespace DigitalGameStore.Controllers
             return View(licence);
         }
 
-        // GET: Licences/Create
+        // GET: Licence/Create
         public IActionResult Create()
         {
+            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId");
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Discriminator");
             return View();
         }
 
-        // POST: Licences/Create
+        // POST: Licence/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LicenceId,Name,Description,UserId,GameId")] Licence licence)
+        public async Task<IActionResult> Create([Bind("Name,Description,UserId,GameId")] Licence licence)
         {
             if (ModelState.IsValid)
             {
@@ -65,11 +67,12 @@ namespace DigitalGameStore.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId", licence.GameId);
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Discriminator", licence.UserId);
             return View(licence);
         }
 
-        // GET: Licences/Edit/5
+        // GET: Licence/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,18 +85,19 @@ namespace DigitalGameStore.Controllers
             {
                 return NotFound();
             }
+            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId", licence.GameId);
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Discriminator", licence.UserId);
             return View(licence);
         }
 
-        // POST: Licences/Edit/5
+        // POST: Licence/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LicenceId,Name,Description,UserId,GameId")] Licence licence)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,UserId,GameId")] Licence licence)
         {
-            if (id != licence.LicenceId)
+            if (id != licence.UserId)
             {
                 return NotFound();
             }
@@ -107,7 +111,7 @@ namespace DigitalGameStore.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LicenceExists(licence.LicenceId))
+                    if (!LicenceExists(licence.UserId))
                     {
                         return NotFound();
                     }
@@ -118,11 +122,12 @@ namespace DigitalGameStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId", licence.GameId);
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Discriminator", licence.UserId);
             return View(licence);
         }
 
-        // GET: Licences/Delete/5
+        // GET: Licence/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,8 +136,9 @@ namespace DigitalGameStore.Controllers
             }
 
             var licence = await _context.Licences
+                .Include(l => l.Game)
                 .Include(l => l.User)
-                .FirstOrDefaultAsync(m => m.LicenceId == id);
+                .FirstOrDefaultAsync(m => m.UserId == id);
             if (licence == null)
             {
                 return NotFound();
@@ -141,7 +147,7 @@ namespace DigitalGameStore.Controllers
             return View(licence);
         }
 
-        // POST: Licences/Delete/5
+        // POST: Licence/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -158,7 +164,7 @@ namespace DigitalGameStore.Controllers
 
         private bool LicenceExists(int id)
         {
-            return _context.Licences.Any(e => e.LicenceId == id);
+            return _context.Licences.Any(e => e.UserId == id);
         }
     }
 }

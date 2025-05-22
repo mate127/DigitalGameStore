@@ -7,7 +7,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Catalogue</h4>
+    <h4>Catalogue: @Html.DisplayFor(model => model.Name)</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -23,6 +23,25 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
     </dl>
+
+    @if (Model.Games != null && Model.Games.Any())
+    {
+        <h5>Items in this Catalogue:</h5>
+        <ul>
+            @foreach (var item in Model.Games)
+            {
+                <li>@item.Name</li>
+                <li>@item.PublicationDate</li>
+                <li>@item.Price</li>
+                <li>@item.Genre</li>
+                <li>@item.Publisher</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p><em>No items in this catalogue.</em></p>
+    }
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.CatalogueId">Edit</a> |

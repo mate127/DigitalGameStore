@@ -2,7 +2,7 @@
 {
     public class Licence
     {
-        public int LicenceId { get; set; }
+        //public int LicenceId { get; set; }
         public required string Name { get; set; }
         public string? Description { get; set; }
 

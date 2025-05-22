@@ -24,22 +24,22 @@ namespace DigitalGameStore.Data
             // Game - Genre (many-to-one)
             modelBuilder.Entity<Game>()
                 .HasOne(g => g.Genre)
-                .WithMany()
+                .WithMany(x => x.Games)
                 .HasForeignKey(g => g.GenreId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Game - Publisher (Admin) (many-to-one)
             modelBuilder.Entity<Game>()
-                .HasOne(g => g.Publisher)
-                .WithMany()
+                .HasOne(p => p.Publisher)
+                .WithMany(g => g.CreatedGames)
                 .HasForeignKey(g => g.PublisherId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Game - Licence (one-to-one)
+            // Game - Licence (one-to-many)
             modelBuilder.Entity<Game>()
-                .HasOne(g => g.Licence)
-                .WithOne(l => l.Game)
-                .HasForeignKey<Game>(g => g.LicenceId)
+                .HasMany(l => l.Licences)
+                .WithOne(g => g.Game)
+                .HasForeignKey(l => l.GameId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Game - Reviews (one-to-many)
@@ -49,12 +49,16 @@ namespace DigitalGameStore.Data
                 .HasForeignKey(r => r.GameId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Review - User
+            // Review - User (many-to-one)
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Licence composite key
+            modelBuilder.Entity<Licence>()
+                .HasKey(l => new { l.UserId, l.GameId });
 
             // Licence - User (many-to-one)
             modelBuilder.Entity<Licence>()
@@ -62,6 +66,15 @@ namespace DigitalGameStore.Data
                 .WithMany(u => u.Licences)
                 .HasForeignKey(l => l.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Game - Catalogue (many-to-many)
+            modelBuilder.Entity<Game>()
+            .HasMany(s => s.Catalogues)
+            .WithMany(c => c.Games)
+            .UsingEntity<Dictionary<string, object>>(
+                "GameCatalogue", // name of existing table
+                j => j.HasOne<Catalogue>().WithMany().HasForeignKey("CatalogueId"),
+                j => j.HasOne<Game>().WithMany().HasForeignKey("GameId"));
         }
     }
 }
