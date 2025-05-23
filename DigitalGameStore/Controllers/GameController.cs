@@ -125,8 +125,8 @@ namespace DigitalGameStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "GenreId", game.GenreId);
-            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "UserId", game.PublisherId);
+            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "Name", game.GenreId);
+            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Username", game.PublisherId);
             return View(game);
         }
 

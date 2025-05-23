@@ -47,8 +47,9 @@ namespace DigitalGameStore.Controllers
         }
 
         // GET: Reviews/Create
-        public IActionResult Create()
+        public IActionResult Create(string returnUrl)
         {
+            ViewData["ReturnUrl"] = returnUrl ?? Url.Action("Index", "Game");
             ViewData["GameId"] = new SelectList(_context.Games, "GameId", "Name");
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Username");
             return View();
@@ -59,12 +60,16 @@ namespace DigitalGameStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ReviewId,Description,UserId,GameId")] Review review)
+        public async Task<IActionResult> Create([Bind("ReviewId,Description,UserId,GameId")] Review review, string returnUrl)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(review);
                 await _context.SaveChangesAsync();
+
+                if (!string.IsNullOrEmpty(returnUrl))
+                    return Redirect(returnUrl);
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GameId"] = new SelectList(_context.Games, "GameId", "Name", review.GameId);
