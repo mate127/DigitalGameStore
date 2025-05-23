@@ -53,14 +53,14 @@
 </div>
 
 <div>
+	<h5>Reviews for this game:</h5>
+
 	@if (Model.Reviews != null && Model.Reviews.Any())
 	{
-		<h5>Reviews for this game:</h5>
-
 		@foreach (var item in Model.Reviews)
 		{
 			<div class="mb-4 p-3 border rounded bg-light">
-				<p><strong>Review:</strong> @item.Description</p>
+				<p><strong>@item.User.Username:</strong> @item.Description</p>
 
 				<a asp-controller="Review" asp-action="Edit" asp-route-id="@item.ReviewId" class="btn btn-warning btn-sm mt-2">
 					Edit
@@ -75,13 +75,12 @@
 	{
 		<p><em>No reviews for this game.</em></p>
 	}
+
+	<a asp-controller="Review" asp-action="Create" class="btn btn-success btn-sm mt-2">Create New Review</a>
 </div>
 
 <div>
-    <form asp-action="Edit" asp-route-id="@Model?.GameId" method="get" style="display:inline;">
-        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
-    </form>
     <form asp-action="Index" method="get" style="display:inline;">
-        <button type="submit" class="btn btn-light btn-sm">Back to List</button>
+        <button type="submit" class="btn btn-light btn-sm mt-2">Back to List</button>
     </form>
 </div>

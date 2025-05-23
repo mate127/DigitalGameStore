@@ -34,6 +34,8 @@ namespace DigitalGameStore.Controllers
             }
 
             var gameGenre = await _context.GameGenres
+                .Include(g => g.Games)
+                    .ThenInclude(g => g.Publisher)
                 .FirstOrDefaultAsync(m => m.GenreId == id);
             if (gameGenre == null)
             {

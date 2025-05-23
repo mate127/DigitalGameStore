@@ -49,8 +49,8 @@ namespace DigitalGameStore.Controllers
         // GET: Reviews/Create
         public IActionResult Create()
         {
-            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId");
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId");
+            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "Name");
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Username");
             return View();
         }
 
@@ -67,8 +67,8 @@ namespace DigitalGameStore.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId", review.GameId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", review.UserId);
+            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "Name", review.GameId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Username", review.UserId);
             return View(review);
         }
 
@@ -85,8 +85,8 @@ namespace DigitalGameStore.Controllers
             {
                 return NotFound();
             }
-            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId", review.GameId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", review.UserId);
+            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "Name", review.GameId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Username", review.UserId);
             return View(review);
         }
 
@@ -122,8 +122,8 @@ namespace DigitalGameStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId", review.GameId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", review.UserId);
+            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "Name", review.GameId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Username", review.UserId);
             return View(review);
         }
 
