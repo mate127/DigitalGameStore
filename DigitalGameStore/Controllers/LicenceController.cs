@@ -27,9 +27,9 @@ namespace DigitalGameStore.Controllers
         }
 
         // GET: Licence/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? UserId, int? GameId)
         {
-            if (id == null)
+            if (UserId == null || GameId == null)
             {
                 return NotFound();
             }
@@ -37,7 +37,7 @@ namespace DigitalGameStore.Controllers
             var licence = await _context.Licences
                 .Include(l => l.Game)
                 .Include(l => l.User)
-                .FirstOrDefaultAsync(m => m.UserId == id);
+                .FirstOrDefaultAsync(m => m.UserId == UserId && m.GameId == GameId);
             if (licence == null)
             {
                 return NotFound();
@@ -73,14 +73,14 @@ namespace DigitalGameStore.Controllers
         }
 
         // GET: Licence/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? UserId, int? GameId)
         {
-            if (id == null)
+            if (UserId == null || GameId == null)
             {
                 return NotFound();
             }
 
-            var licence = await _context.Licences.FindAsync(id);
+            var licence = await _context.Licences.FindAsync(UserId, GameId);
             if (licence == null)
             {
                 return NotFound();
@@ -95,9 +95,9 @@ namespace DigitalGameStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,UserId,GameId")] Licence licence)
+        public async Task<IActionResult> Edit(int UserId, int GameId, [Bind("Name,Description,UserId,GameId")] Licence licence)
         {
-            if (id != licence.UserId)
+            if (UserId != licence.UserId || GameId != licence.GameId)
             {
                 return NotFound();
             }
@@ -111,7 +111,7 @@ namespace DigitalGameStore.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LicenceExists(licence.UserId))
+                    if (!LicenceExists(licence.UserId, licence.GameId))
                     {
                         return NotFound();
                     }
@@ -128,9 +128,9 @@ namespace DigitalGameStore.Controllers
         }
 
         // GET: Licence/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? UserId, int? GameId)
         {
-            if (id == null)
+            if (UserId == null || GameId == null)
             {
                 return NotFound();
             }
@@ -138,7 +138,7 @@ namespace DigitalGameStore.Controllers
             var licence = await _context.Licences
                 .Include(l => l.Game)
                 .Include(l => l.User)
-                .FirstOrDefaultAsync(m => m.UserId == id);
+                .FirstOrDefaultAsync(m => m.UserId == UserId && m.GameId == GameId);
             if (licence == null)
             {
                 return NotFound();
@@ -150,9 +150,9 @@ namespace DigitalGameStore.Controllers
         // POST: Licence/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int UserId, int GameId)
         {
-            var licence = await _context.Licences.FindAsync(id);
+            var licence = await _context.Licences.FindAsync(UserId, GameId);
             if (licence != null)
             {
                 _context.Licences.Remove(licence);
@@ -162,9 +162,9 @@ namespace DigitalGameStore.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool LicenceExists(int id)
+        private bool LicenceExists(int UserId, int GameId)
         {
-            return _context.Licences.Any(e => e.UserId == id);
+            return _context.Licences.Any(e => e.UserId == UserId && e.GameId == GameId);
         }
     }
 }
