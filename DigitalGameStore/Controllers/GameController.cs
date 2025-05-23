@@ -67,7 +67,7 @@ namespace DigitalGameStore.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GameGenreId", "GameGenreId", game.GenreId);
+            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "GenreId", game.GenreId);
             ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Discriminator", game.PublisherId);
             return View(game);
         }
@@ -85,8 +85,8 @@ namespace DigitalGameStore.Controllers
             {
                 return NotFound();
             }
-            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GameGenreId", "GameGenreId", game.GenreId);
-            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Discriminator", game.PublisherId);
+            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "GenreId", game.GenreId);
+            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "UserId", game.PublisherId);
             return View(game);
         }
 
@@ -122,8 +122,8 @@ namespace DigitalGameStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GameGenreId", "GameGenreId", game.GenreId);
-            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Discriminator", game.PublisherId);
+            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "GenreId", game.GenreId);
+            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "UserId", game.PublisherId);
             return View(game);
         }
 
