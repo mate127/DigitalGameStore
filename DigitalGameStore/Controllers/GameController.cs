@@ -37,20 +37,23 @@ namespace DigitalGameStore.Controllers
             var game = await _context.Games
                 .Include(g => g.Genre)
                 .Include(g => g.Publisher)
+                .Include(g => g.Reviews)
                 .FirstOrDefaultAsync(m => m.GameId == id);
             if (game == null)
             {
                 return NotFound();
             }
 
+            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "Name", game.GenreId);
+            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Username", game.PublisherId);
             return View(game);
         }
 
         // GET: Game/Create
         public IActionResult Create()
         {
-            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GameGenreId", "GameGenreId");
-            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Discriminator");
+            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "Name");
+            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Username");
             return View();
         }
 
@@ -67,8 +70,8 @@ namespace DigitalGameStore.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "GenreId", game.GenreId);
-            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Discriminator", game.PublisherId);
+            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "Name", game.GenreId);
+            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Username", game.PublisherId);
             return View(game);
         }
 
@@ -85,8 +88,8 @@ namespace DigitalGameStore.Controllers
             {
                 return NotFound();
             }
-            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "GenreId", game.GenreId);
-            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "UserId", game.PublisherId);
+            ViewData["GenreId"] = new SelectList(_context.GameGenres, "GenreId", "Name", game.GenreId);
+            ViewData["PublisherId"] = new SelectList(_context.Admins, "UserId", "Username", game.PublisherId);
             return View(game);
         }
 

@@ -50,7 +50,7 @@ namespace DigitalGameStore.Controllers
         public IActionResult Create()
         {
             ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId");
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Discriminator");
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId");
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace DigitalGameStore.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId", review.GameId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Discriminator", review.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", review.UserId);
             return View(review);
         }
 
@@ -86,7 +86,7 @@ namespace DigitalGameStore.Controllers
                 return NotFound();
             }
             ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId", review.GameId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Discriminator", review.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", review.UserId);
             return View(review);
         }
 
@@ -123,7 +123,7 @@ namespace DigitalGameStore.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GameId"] = new SelectList(_context.Games, "GameId", "GameId", review.GameId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Discriminator", review.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", review.UserId);
             return View(review);
         }
 
