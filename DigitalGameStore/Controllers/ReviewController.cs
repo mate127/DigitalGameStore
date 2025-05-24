@@ -78,7 +78,7 @@ namespace DigitalGameStore.Controllers
         }
 
         // GET: Reviews/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string returnUrl)
         {
             if (id == null)
             {
@@ -90,6 +90,8 @@ namespace DigitalGameStore.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["ReturnUrl"] = returnUrl ?? Url.Action("Index", "Game");
             ViewData["GameId"] = new SelectList(_context.Games, "GameId", "Name", review.GameId);
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Username", review.UserId);
             return View(review);
@@ -100,7 +102,7 @@ namespace DigitalGameStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ReviewId,Description,UserId,GameId")] Review review)
+        public async Task<IActionResult> Edit(int id, [Bind("ReviewId,Description,UserId,GameId")] Review review, string returnUrl)
         {
             if (id != review.ReviewId)
             {
@@ -125,6 +127,10 @@ namespace DigitalGameStore.Controllers
                         throw;
                     }
                 }
+
+                if (!string.IsNullOrEmpty(returnUrl))
+                    return Redirect(returnUrl);
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GameId"] = new SelectList(_context.Games, "GameId", "Name", review.GameId);
@@ -133,7 +139,7 @@ namespace DigitalGameStore.Controllers
         }
 
         // GET: Reviews/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string returnUrl)
         {
             if (id == null)
             {
@@ -149,13 +155,14 @@ namespace DigitalGameStore.Controllers
                 return NotFound();
             }
 
+            ViewData["ReturnUrl"] = returnUrl ?? Url.Action("Index", "Game");
             return View(review);
         }
 
         // POST: Reviews/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string returnUrl)
         {
             var review = await _context.Reviews.FindAsync(id);
             if (review != null)
@@ -164,6 +171,10 @@ namespace DigitalGameStore.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+
             return RedirectToAction(nameof(Index));
         }
 

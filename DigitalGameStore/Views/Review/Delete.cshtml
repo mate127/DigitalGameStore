@@ -32,8 +32,10 @@
     </dl>
     
     <form asp-action="Delete">
+        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
         <input type="hidden" asp-for="ReviewId" />
         <input type="submit" value="Delete" class="btn btn-danger" />
-        <a asp-action="Index" class="btn btn-light btn-sm mt-2">Back to List</a>
+
+        <a asp-controller="Game" asp-action="Index" class="btn btn-light btn-sm mt-2">Back to Games</a>
     </form>
 </div>

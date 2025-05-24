@@ -38,6 +38,7 @@ namespace DigitalGameStore.Controllers
                 .Include(g => g.Genre)
                 .Include(g => g.Publisher)
                 .Include(g => g.Reviews)
+                    .ThenInclude(g => g.User)
                 .FirstOrDefaultAsync(m => m.GameId == id);
             if (game == null)
             {

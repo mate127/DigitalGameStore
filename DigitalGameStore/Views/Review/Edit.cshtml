@@ -11,6 +11,8 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ReviewId" />
             <div class="form-group">
@@ -36,7 +38,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" class="btn btn-light btn-sm mt-2">Back to List</a>
+    <a asp-controller="Game" asp-action="Index" class="btn btn-light btn-sm mt-2">Back to Games</a>
 </div>
 
 @section Scripts {
