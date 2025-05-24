@@ -47,10 +47,16 @@ namespace DigitalGameStore.Controllers
         }
 
         // GET: Reviews/Create
-        public IActionResult Create(string returnUrl)
+        public IActionResult Create(int gameId, string returnUrl)
         {
+            var game = _context.Games.FirstOrDefault(g => g.GameId == gameId);
+            var review = new Review
+            {
+                GameId = gameId,
+            };
+
             ViewData["ReturnUrl"] = returnUrl ?? Url.Action("Index", "Game");
-            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "Name");
+            ViewData["GameId"] = new SelectList(_context.Games, "GameId", "Name", review.GameId);
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Username");
             return View();
         }

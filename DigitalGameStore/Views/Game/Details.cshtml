@@ -78,7 +78,7 @@
 		<p><em>No reviews for this game.</em></p>
 	}
 
-	<a asp-controller="Review" asp-action="Create" asp-route-returnUrl="@Context.Request.Path" class="btn btn-success btn-sm mt-2">
+	<a asp-controller="Review" asp-action="Create" asp-route-gameId="@Model.GameId" asp-route-returnUrl="@Context.Request.Path" class="btn btn-success btn-sm mt-2">
 		Create New Review
 	</a>
 </div>
