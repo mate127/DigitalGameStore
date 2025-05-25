@@ -20,11 +20,14 @@ namespace DigitalGameStore.Controllers
         }
 
         // GET: Catalogue
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchString)
         {
-            return View(await _context.Catalogues
-                //.Include(x => x.Games)
-                .ToListAsync());
+            IQueryable<Catalogue> catalogues = _context.Catalogues;
+
+            if (!string.IsNullOrEmpty(searchString))
+                catalogues = catalogues.Where(g => g.Name.Contains(searchString));
+
+            return View(await catalogues.ToListAsync());
         }
 
         // GET: Catalogue/Details/5
