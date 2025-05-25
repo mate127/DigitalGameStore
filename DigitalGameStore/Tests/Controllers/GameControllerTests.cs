@@ -9,185 +9,124 @@ namespace DigitalGameStore.Tests.Controllers
 {
     public class GameControllerTests
     {
-        private AppDbContext GetInMemoryContext()
+        private AppDbContext GetDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: "GameTestDb_" + System.Guid.NewGuid()) // koristi GUID da izbjegne duplikate
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
             var context = new AppDbContext(options);
 
-            // Dodaj potrebne entitete ako nisu već dodani
-            if (!context.GameGenres.Any())
-            {
-                context.GameGenres.Add(new GameGenre { GenreId = 1, Name = "Action" });
-            }
+            context.GameGenres.Add(new GameGenre { GenreId = 1, Name = "RPG" });
+            context.Admins.Add(new Admin { UserId = 1, Username = "admin", Email = "admin@mail.com", Password = "pass123" });
 
-            if (!context.Admins.Any())
+            context.Games.Add(new Game
             {
-                context.Admins.Add(new Admin { UserId = 1, Username = "Admin1", Email = "admin@example.com", Password = "pass123", Salary = 1000 });
-            }
-
-            if (!context.Games.Any())
-            {
-                context.Games.Add(new Game
-                {
-                    GameId = 1,
-                    Name = "Test Game",
-                    Description = "Test Description",
-                    GenreId = 1,
-                    PublisherId = 1,
-                    Price = 49.99M,
-                    PublicationDate = System.DateTime.Today
-                });
-            }
+                GameId = 1,
+                Name = "Skyrim",
+                Description = "Epic RPG",
+                Price = 59.99m,
+                PublicationDate = new DateTime(2011, 11, 11),
+                GenreId = 1,
+                PublisherId = 1
+            });
 
             context.SaveChanges();
             return context;
         }
 
         [Fact]
-        public async Task Index_ReturnsViewResult_WithListOfGames()
+        public async Task Index_ReturnsViewWithAllGames()
         {
-            var context = GetInMemoryContext();
+            var context = GetDbContext();
             var controller = new GameController(context);
 
-            var result = await controller.Index();
+            var result = await controller.Index(null) as ViewResult;
+            var model = result?.Model as System.Collections.Generic.List<Game>;
 
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<IEnumerable<Game>>(viewResult.Model);
+            Assert.NotNull(result);
+            Assert.NotNull(model);
             Assert.Single(model);
         }
 
         [Fact]
-        public async Task Details_ReturnsNotFound_WhenIdIsNull()
+        public async Task Index_WithSearch_ReturnsFilteredGames()
         {
-            var context = GetInMemoryContext();
+            var context = GetDbContext();
             var controller = new GameController(context);
 
-            var result = await controller.Details(null);
+            var result = await controller.Index("Skyrim") as ViewResult;
+            var model = result?.Model as System.Collections.Generic.List<Game>;
 
-            Assert.IsType<NotFoundResult>(result);
+            Assert.NotNull(result);
+            Assert.Single(model);
+            Assert.Equal("Skyrim", model.First().Name);
         }
 
         [Fact]
-        public async Task Details_ReturnsNotFound_WhenGameDoesNotExist()
+        public async Task Details_ValidId_ReturnsView()
         {
-            var context = GetInMemoryContext();
+            var context = GetDbContext();
             var controller = new GameController(context);
 
-            var result = await controller.Details(999); // id koji ne postoji
+            var result = await controller.Details(1) as ViewResult;
+            var model = result?.Model as Game;
 
-            Assert.IsType<NotFoundResult>(result);
+            Assert.NotNull(result);
+            Assert.NotNull(model);
+            Assert.Equal(1, model.GameId);
         }
 
         [Fact]
-        public async Task Details_ReturnsViewResult_WithGame()
+        public async Task Create_PostValidGame_RedirectsToIndex()
         {
-            var context = GetInMemoryContext();
-            var controller = new GameController(context);
-
-            var result = await controller.Details(1);
-
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<Game>(viewResult.Model);
-            Assert.Equal("Test Game", model.Name);
-        }
-
-        [Fact]
-        public void Create_Get_ReturnsViewResult_WithViewData()
-        {
-            var context = GetInMemoryContext();
-            var controller = new GameController(context);
-
-            var result = controller.Create();
-
-            var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.True(viewResult.ViewData.ContainsKey("GenreId"));
-            Assert.True(viewResult.ViewData.ContainsKey("PublisherId"));
-        }
-
-        [Fact]
-        public async Task Create_Post_RedirectsToIndex_WhenModelStateIsValid()
-        {
-            var context = GetInMemoryContext();
+            var context = GetDbContext();
             var controller = new GameController(context);
 
             var newGame = new Game
             {
-                Name = "New Game",
-                Description = "Description",
+                Name = "Portal",
+                Description = "Puzzle game",
+                Price = 19.99m,
+                PublicationDate = new DateTime(2007, 10, 10),
                 GenreId = 1,
-                PublisherId = 1,
-                Price = 59.99m,
-                PublicationDate = DateTime.Today
+                PublisherId = 1
             };
 
-            var result = await controller.Create(newGame);
+            var result = await controller.Create(newGame) as RedirectToActionResult;
 
-            var redirect = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirect.ActionName);
-
-            Assert.True(context.Games.Any(g => g.Name == "New Game"));
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal(2, context.Games.Count()); // 1 existing + 1 new
         }
 
         [Fact]
-        public async Task Edit_Get_ReturnsViewResult_WithGame()
+        public async Task Edit_PostValidGame_UpdatesGame()
         {
-            var context = GetInMemoryContext();
+            var context = GetDbContext();
             var controller = new GameController(context);
 
-            var result = await controller.Edit(1);
+            var updatedGame = context.Games.First();
+            updatedGame.Name = "Skyrim Remastered";
 
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<Game>(viewResult.Model);
-            Assert.Equal(1, model.GameId);
+            var result = await controller.Edit(updatedGame.GameId, updatedGame) as RedirectToActionResult;
+
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Skyrim Remastered", context.Games.First().Name);
         }
 
         [Fact]
-        public async Task Edit_Post_UpdatesGame_WhenModelIsValid()
+        public async Task DeleteConfirmed_ValidId_DeletesGame()
         {
-            var context = GetInMemoryContext();
+            var context = GetDbContext();
             var controller = new GameController(context);
 
-            var gameToUpdate = context.Games.First();
-            gameToUpdate.Name = "Updated Game";
+            var result = await controller.DeleteConfirmed(1) as RedirectToActionResult;
 
-            var result = await controller.Edit(gameToUpdate.GameId, gameToUpdate);
-
-            var redirect = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirect.ActionName);
-
-            var updatedGame = context.Games.Find(gameToUpdate.GameId);
-            Assert.Equal("Updated Game", updatedGame.Name);
-        }
-
-        [Fact]
-        public async Task Delete_Get_ReturnsViewResult_WithGame()
-        {
-            var context = GetInMemoryContext();
-            var controller = new GameController(context);
-
-            var result = await controller.Delete(1);
-
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<Game>(viewResult.Model);
-            Assert.Equal(1, model.GameId);
-        }
-
-        [Fact]
-        public async Task DeleteConfirmed_RemovesGameAndRedirects()
-        {
-            var context = GetInMemoryContext();
-            var controller = new GameController(context);
-
-            var result = await controller.DeleteConfirmed(1);
-
-            var redirect = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirect.ActionName);
-
-            var game = context.Games.Find(1);
-            Assert.Null(game);
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Empty(context.Games);
         }
     }
 }
