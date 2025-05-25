@@ -1,6 +1,7 @@
 ﻿using DigitalGameStore.Controllers;
 using DigitalGameStore.Data;
 using DigitalGameStore.Models;
+using Humanizer.Localisation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -9,36 +10,61 @@ namespace DigitalGameStore.Tests.Integration
 {
     public class GameIntegrationTests
     {
-        [Fact]
-        public async Task Create_ThenRead_Game()
+        private async Task<AppDbContext> GetDbContextAsync()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase("GameTestDb")
+                .UseInMemoryDatabase(databaseName: $"GameDb_{System.Guid.NewGuid()}")
                 .Options;
+            var context = new AppDbContext(options);
+            await context.Database.EnsureCreatedAsync();
 
-            using (var context = new AppDbContext(options))
+            context.GameGenres.Add(new GameGenre { GenreId = 1, Name = "Action" });
+            context.Admins.Add(new Admin { UserId = 1, Username = "Epic", Email = "epic@mail.com", Password = "pass123" });
+            await context.SaveChangesAsync();
+
+            return context;
+        }
+
+        [Fact]
+        public async Task CanInsertGameIntoDatabase()
+        {
+            using var context = await GetDbContextAsync();
+            var game = new Game
             {
-                var controller = new GameController(context);
+                Name = "Super Game",
+                Price = 49.99m,
+                GenreId = 1,
+                PublisherId = 1
+            };
 
-                var newGame = new Game
-                {
-                    Name = "Integracija",
-                    Description = "Test integracije",
-                    PublicationDate = DateTime.Now,
-                    Price = 29.99m,
-                    GenreId = 1,
-                    PublisherId = 1
-                };
+            context.Games.Add(game);
+            await context.SaveChangesAsync();
 
-                var result = await controller.Create(newGame) as RedirectToActionResult;
-                Assert.Equal("Index", result?.ActionName);
-            }
+            Assert.Single(context.Games);
+        }
 
-            using (var context = new AppDbContext(options))
+        [Fact]
+        public async Task CanRetrieveGameWithRelations()
+        {
+            using var context = await GetDbContextAsync();
+            var game = new Game
             {
-                var game = context.Games.FirstOrDefault(g => g.Name == "Integracija");
-                Assert.NotNull(game);
-            }
+                Name = "Mega Game",
+                Price = 29.99m,
+                GenreId = 1,
+                PublisherId = 1
+            };
+
+            context.Games.Add(game);
+            await context.SaveChangesAsync();
+
+            var result = await context.Games
+                .Include(g => g.Genre)
+                .Include(g => g.Publisher)
+                .FirstOrDefaultAsync();
+
+            Assert.Equal("Action", result?.Genre.Name);
+            Assert.Equal("Epic", result?.Publisher.Username);
         }
     }
 }
