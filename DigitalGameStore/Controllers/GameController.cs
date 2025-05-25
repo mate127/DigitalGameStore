@@ -20,11 +20,26 @@ namespace DigitalGameStore.Controllers
         }
 
         // GET: Game
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchString)
         {
-            var appDbContext = _context.Games.Include(g => g.Genre).Include(g => g.Publisher);
-            return View(await appDbContext.ToListAsync());
+            IQueryable<Game> games = _context.Games.Include(g => g.Genre).Include(g => g.Publisher);
+
+            if (!string.IsNullOrEmpty(searchString))
+                games = games.Where(g => g.Name.Contains(searchString));
+
+            return View(await games.ToListAsync());
         }
+
+        // GET: Game with search
+        //public async Task<IActionResult> IndexWithSearch(string? searchString)
+        //{
+        //    IQueryable<Game> games = _context.Games.Include(g => g.Genre).Include(g => g.Publisher);
+
+        //    if (!string.IsNullOrEmpty(searchString))
+        //        games = games.Where(g => g.Name.Contains(searchString));
+
+        //    return View("Index", await games.ToListAsync());
+        //}
 
         // GET: Game/Details/5
         public async Task<IActionResult> Details(int? id)

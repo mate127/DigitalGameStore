@@ -6,11 +6,14 @@
 
 <h1>Catalogues</h1>
 
-<p>
-    <form asp-action="Create" method="get" style="display:inline;">
-        <button type="submit" class="btn btn-success btn-sm">Create New</button>
-    </form>
-</p>
+<form asp-action="Index" method="get" class="mb-3 d-flex">
+    <input type="text" name="searchString" class="form-control me-2" placeholder="Search catalogues..." value="@ViewData["CurrentFilter"]" />
+    <button type="submit" class="btn btn-outline-secondary">Search</button>
+</form>
+<form asp-action="Create" method="get" style="display:inline;">
+    <button type="submit" class="btn btn-success btn-sm">Create New</button>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -24,28 +27,37 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                <form asp-action="Edit" asp-route-id="@item.CatalogueId" method="get" style="display:inline;">
-                    <button type="submit" class="btn btn-warning btn-sm">Edit</button>
-                </form>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    <form asp-action="Edit" asp-route-id="@item.CatalogueId" method="get" style="display:inline;">
+                        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                    </form>
 
-                <form asp-action="Details" asp-route-id="@item.CatalogueId" method="get" style="display:inline;">
-                    <button type="submit" class="btn btn-primary btn-sm">Details</button>
-                </form>
+                    <form asp-action="Details" asp-route-id="@item.CatalogueId" method="get" style="display:inline;">
+                        <button type="submit" class="btn btn-primary btn-sm">Details</button>
+                    </form>
 
-                <form asp-action="Delete" asp-route-id="@item.CatalogueId" method="get" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            </td>
-        </tr>
-}
+                    <form asp-action="Delete" asp-route-id="@item.CatalogueId" method="get" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-muted"><em>No catalogues found.</em></td>
+            </tr>
+        }
     </tbody>
 </table>
