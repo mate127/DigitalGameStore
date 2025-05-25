@@ -54,7 +54,7 @@ namespace DigitalGameStore.Tests.Controllers
             var controller = new GameController(context);
 
             // Act
-            var result = await controller.Index();
+            var result = await controller.Index("");
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
